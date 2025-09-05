@@ -51,7 +51,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// pre hook
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
@@ -62,6 +61,10 @@ userSchema.pre("save", async function (next) {
     next(error);
   }
 });
+
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 
