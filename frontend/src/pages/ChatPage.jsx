@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +14,6 @@ import {
   Thread,
   Window,
 } from "stream-chat-react";
-
 import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
 
@@ -55,7 +55,12 @@ const ChatPage = () => {
           tokenData.token
         );
 
+        //
         const channelId = [authUser._id, targetUserId].sort().join("-");
+
+        // you and me
+        // if i start the chat => channelId: [myId, yourId]
+        // if you start the chat => channelId: [yourId, myId]  => [myId,yourId]
 
         const currChannel = client.channel("messaging", channelId, {
           members: [authUser._id, targetUserId],
@@ -66,12 +71,14 @@ const ChatPage = () => {
         setChatClient(client);
         setChannel(currChannel);
       } catch (error) {
-        console.error("Error initializing chat", error);
-        toast.error("Could not connect to chat. Please try again !!");
+        console.error("Error initializing chat:", error);
+        toast.error("Could not connect to chat. Please try again.");
       } finally {
         setLoading(false);
       }
     };
+
+    initChat();
   }, [tokenData, authUser, targetUserId]);
 
   const handleVideoCall = () => {
@@ -94,7 +101,6 @@ const ChatPage = () => {
         <Channel channel={channel}>
           <div className="w-full relative">
             <CallButton handleVideoCall={handleVideoCall} />
-
             <Window>
               <ChannelHeader />
               <MessageList />
@@ -107,5 +113,4 @@ const ChatPage = () => {
     </div>
   );
 };
-
 export default ChatPage;

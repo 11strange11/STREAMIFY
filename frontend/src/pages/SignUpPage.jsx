@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { signup } from "../lib/api";
+import useSignUp from "../hooks/useSignUp";
 
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
@@ -11,16 +10,8 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
-  const queryClient = useQueryClient;
 
-  const {
-    mutate: signupMutation,
-    isPending,
-    error,
-  } = useMutation({
-    mutationFn: signup,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  });
+  const { isPending, error, signupMutation } = useSignUp();
 
   const handleSignup = (e) => {
     e.preventDefault();
@@ -33,7 +24,9 @@ const SignUpPage = () => {
       data-theme="forest"
     >
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
+        {/* SIGNUP FORM - LEFT SIDE */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
+          {/* LOGO */}
           <div className="mb-4 flex items-center justify-start gap-2">
             <ShipWheelIcon className="size-9 text-primary" />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
@@ -41,6 +34,7 @@ const SignUpPage = () => {
             </span>
           </div>
 
+          {/* ERROR MESSAGE IF ANY */}
           {error && (
             <div className="alert alert-error mb-4">
               <span>{error.response.data.message}</span>
@@ -58,14 +52,14 @@ const SignUpPage = () => {
                 </div>
 
                 <div className="space-y-3">
+                  {/* FULLNAME */}
                   <div className="form-control w-full">
                     <label className="label">
                       <span className="label-text">Full Name</span>
                     </label>
-
                     <input
                       type="text"
-                      placeholder="John Wick"
+                      placeholder="John Doe"
                       className="input input-bordered w-full"
                       value={signupData.fullName}
                       onChange={(e) =>
@@ -77,6 +71,7 @@ const SignUpPage = () => {
                       required
                     />
                   </div>
+                  {/* EMAIL */}
                   <div className="form-control w-full">
                     <label className="label">
                       <span className="label-text">Email</span>
@@ -92,6 +87,7 @@ const SignUpPage = () => {
                       required
                     />
                   </div>
+                  {/* PASSWORD */}
                   <div className="form-control w-full">
                     <label className="label">
                       <span className="label-text">Password</span>
@@ -113,6 +109,7 @@ const SignUpPage = () => {
                       Password must be at least 6 characters long
                     </p>
                   </div>
+
                   <div className="form-control">
                     <label className="label cursor-pointer justify-start gap-2">
                       <input
@@ -133,6 +130,7 @@ const SignUpPage = () => {
                     </label>
                   </div>
                 </div>
+
                 <button className="btn btn-primary w-full" type="submit">
                   {isPending ? (
                     <>
@@ -143,6 +141,7 @@ const SignUpPage = () => {
                     "Create Account"
                   )}
                 </button>
+
                 <div className="text-center mt-4">
                   <p className="text-sm">
                     Already have an account?{" "}
@@ -156,7 +155,7 @@ const SignUpPage = () => {
           </div>
         </div>
 
-        {/*Right Side*/}
+        {/* SIGNUP FORM - RIGHT SIDE */}
         <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
           <div className="max-w-md p-8">
             {/* Illustration */}

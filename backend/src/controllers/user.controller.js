@@ -140,15 +140,39 @@ export async function getFriendRequests(req, res) {
 }
 
 export async function getOutgoingFriendReqs(req, res) {
-    try {
-      const outgoingRequests = await FriendRequest.find({
-        sender: req.user.id,
-        status: "pending",
-      }).populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
-  
-      res.status(200).json(outgoingRequests);
-    } catch (error) {
-      console.log("Error in getOutgoingFriendReqs controller", error.message);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
+  try {
+    const outgoingRequests = await FriendRequest.find({
+      sender: req.user.id,
+      status: "pending",
+    }).populate(
+      "recipient",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
+
+    res.status(200).json(outgoingRequests);
+  } catch (error) {
+    console.log("Error in getOutgoingFriendReqs controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
+}
+
+
+{/* Trying new feature, Editing bio*/}
+export async function updateBio(req, res) {
+  try {
+    const { bio } = req.body;
+    if (typeof bio !== "string") {
+      return res.status(400).json({ message: "bio must be a string" });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { bio },
+      { new: true, select: "bio" }
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ bio: user.bio });
+  } catch (e) {
+    console.error("Error in updateBio:", e.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}

@@ -2,7 +2,21 @@ import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { BellIcon, HomeIcon, ShipWheelIcon, UsersIcon } from "lucide-react";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateMyBio } from "../lib/api";
+
 const Sidebar = () => {
+  const queryClient = useQueryClient();
+  const { mutate: saveBio, isPending } = useMutation({
+    mutationFn: updateMyBio,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+  });
+
+  const onEditBio = () => {
+    const next = prompt("Enter your new bio", authUser?.bio || "");
+    if (next !== null) saveBio(next.trim());
+  };
+
   const { authUser } = useAuthUser();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -64,6 +78,18 @@ const Sidebar = () => {
               <span className="size-2 rounded-full bg-success inline-block" />
               Online
             </p>
+            {authUser?.bio && (
+              <p className="text-xs mt-2 opacity-70 line-clamp-3">
+                {authUser.bio}
+              </p>
+            )}
+            <button
+              className="btn btn-ghost btn-xs mt-2"
+              onClick={onEditBio}
+              disabled={isPending}
+            >
+              {isPending ? "Saving..." : "Edit Bio"}
+            </button>
           </div>
         </div>
       </div>

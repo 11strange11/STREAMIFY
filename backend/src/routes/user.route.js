@@ -6,6 +6,7 @@ import {
   acceptFriendRequest,
   getFriendRequests,
   getOutgoingFriendReqs,
+  updateBio,
 } from "../controllers/user.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -24,4 +25,9 @@ router.get("/friend-requests", getFriendRequests);
 
 router.get("/outgoing-friend-requests", getOutgoingFriendReqs);
 
+router.put("/me/bio", updateBio);
+
 export default router;
+
+
+

@@ -1,4 +1,3 @@
-
 import { axiosInstance } from "./axios";
 
 export const signup = async (signupData) => {
@@ -62,5 +61,10 @@ export async function acceptFriendRequest(requestId) {
 
 export async function getStreamToken() {
   const response = await axiosInstance.get("/chat/token");
+  return response.data;
+}
+
+export async function updateMyBio(bio) {
+  const response = await axiosInstance.put("/users/me/bio", { bio });
   return response.data;
 }

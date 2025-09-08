@@ -1,3 +1,4 @@
+
 import { BellIcon } from "lucide-react";
 
 function NoNotificationsFound() {
