@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
 
 import HomePage from "./pages/HomePage.jsx";
-import SignUpPage from "./Pages/SignUpPage.jsx";
+import SignUpPage from "./pages/SignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 import CallPage from "./pages/CallPage.jsx";
